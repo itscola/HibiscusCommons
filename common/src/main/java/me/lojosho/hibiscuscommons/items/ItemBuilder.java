@@ -31,7 +31,7 @@ public class ItemBuilder {
     private String texture;
     @Getter
     private String skullOwner;
-    private ArrayList<String> lore = new ArrayList<>();
+    private List<String> lore = new ArrayList<>();
     private final ArrayList<String> itemFlags = new ArrayList<>();
     private final HashMap<String, Integer> enchantments = new HashMap<>();
     private final HashMap<NamespacedKey, String> nbtData = new HashMap<>();
@@ -135,7 +135,7 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder setLore(@Nullable ArrayList<String> lore) {
+    public ItemBuilder setLore(@Nullable List<String> lore) {
         this.lore = lore;
         return this;
     }
@@ -178,6 +178,18 @@ public class ItemBuilder {
      */
     public ItemBuilder setColor(Color color) {
         this.color = color;
+        return this;
+    }
+
+    /**
+     * Sets the color of the item from RGB
+     * @param red The red value
+     * @param green The green value
+     * @param blue The blue value
+     * @return
+     */
+    public ItemBuilder setColor(int red, int green, int blue) {
+        this.color = Color.fromRGB(red, green, blue);
         return this;
     }
 
