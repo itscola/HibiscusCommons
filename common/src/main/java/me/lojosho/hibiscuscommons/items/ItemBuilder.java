@@ -32,9 +32,9 @@ public class ItemBuilder {
     @Getter
     private String skullOwner;
     private ArrayList<String> lore = new ArrayList<>();
-    private ArrayList<String> itemFlags = new ArrayList<>();
-    private HashMap<String, Integer> enchantments = new HashMap<>();
-    private HashMap<String, String> nbtData = new HashMap<>();
+    private final ArrayList<String> itemFlags = new ArrayList<>();
+    private final HashMap<String, Integer> enchantments = new HashMap<>();
+    private final HashMap<String, String> nbtData = new HashMap<>();
     @Getter
     private int amount = 1;
     @Getter
@@ -61,7 +61,7 @@ public class ItemBuilder {
     }
 
     public ItemBuilder(@NotNull ItemStack itemStack) {
-        this.material = itemStack.getType().toString();
+        this.material = Hooks.getStringItem(itemStack);
         this.amount = itemStack.getAmount();
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return;
@@ -86,6 +86,11 @@ public class ItemBuilder {
         if (!meta.getItemFlags().isEmpty()) {
             for (ItemFlag flag : meta.getItemFlags()) {
                 this.itemFlags.add(flag.toString());
+            }
+        }
+        if (!meta.getPersistentDataContainer().isEmpty()) {
+            for (NamespacedKey key : meta.getPersistentDataContainer().getKeys()) {
+                this.nbtData.put(key.getKey(), meta.getPersistentDataContainer().get(key, PersistentDataType.STRING));
             }
         }
     }
@@ -242,6 +247,30 @@ public class ItemBuilder {
      */
     public List<String> getItemFlags() {
         return List.copyOf(itemFlags);
+    }
+
+    /**
+     * Check to see if a item has any enchantments
+     * @return
+     */
+    public boolean isEnchanted() {
+        return !enchantments.isEmpty();
+    }
+
+    public boolean hasEnchantment(String enchantment) {
+        return enchantments.containsKey(enchantment);
+    }
+
+    public boolean hasEnchantment(Enchantment enchantment) {
+        return enchantments.containsKey(enchantment.getKey().getKey());
+    }
+
+    public boolean hasItemFlag(ItemFlag flag) {
+        return itemFlags.contains(flag.toString());
+    }
+
+    public boolean hasItemFlag(String flag) {
+        return itemFlags.contains(flag);
     }
 
     public ItemStack build() {
