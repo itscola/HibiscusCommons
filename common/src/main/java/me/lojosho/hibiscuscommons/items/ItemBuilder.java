@@ -234,6 +234,37 @@ public class ItemBuilder {
     }
 
     /**
+     * Adds NBT data to the item
+     * @param key
+     * @param value
+     * @return
+     */
+    public ItemBuilder addNBTData(NamespacedKey key, String value) {
+        nbtData.put(key, value);
+        return this;
+    }
+
+    /**
+     * Removes the NBT data from the item
+     * @param key
+     * @return
+     */
+    public ItemBuilder removeNBTData(NamespacedKey key) {
+        nbtData.remove(key);
+        return this;
+    }
+
+    /**
+     * This clears the extra NBT data that has been added. This will not clear the default NBT data that is added by the game.
+     * So if you're materially getting an oraxen item, it will not clear the oraxen NBT data.
+     * @return
+     */
+    public ItemBuilder clearNBTData() {
+        nbtData.clear();
+        return this;
+    }
+
+    /**
      * Returns the lore of the item. Use #setLore to set the lore!
      * @return
      */
@@ -247,6 +278,10 @@ public class ItemBuilder {
      */
     public List<String> getItemFlags() {
         return List.copyOf(itemFlags);
+    }
+
+    public List<NamespacedKey> getNBTDataKeys() {
+        return List.copyOf(nbtData.keySet());
     }
 
     /**
@@ -271,6 +306,10 @@ public class ItemBuilder {
 
     public boolean hasItemFlag(String flag) {
         return itemFlags.contains(flag);
+    }
+
+    public boolean hasNBTData(NamespacedKey key) {
+        return nbtData.containsKey(key);
     }
 
     public ItemStack build() {
