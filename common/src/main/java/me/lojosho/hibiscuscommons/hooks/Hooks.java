@@ -55,12 +55,21 @@ public class Hooks {
         }
     }
 
+    /**
+     * Processing the placeholders using PlaceholderAPI (if possible)
+     * @param player The player to process the placeholders for
+     * @param raw The string to process
+     * @return
+     */
     @NotNull
-    public static String processPlaceholders(OfflinePlayer player, String raw) {
+    public static String processPlaceholders(@NotNull OfflinePlayer player, @NotNull String raw) {
         if (isActiveHook("PlaceholderAPI")) return PlaceholderAPI.setPlaceholders(player, raw);
         return raw;
     }
 
+    /**
+     * This setups the hooks and registers the events for the hooks. It'll also load the hooks if they are active.
+     */
     public static void setup() {
         for (Hook hook : hooks.values()) {
             if (Bukkit.getPluginManager().getPlugin(hook.getId()) != null) {
@@ -72,17 +81,22 @@ public class Hooks {
         }
     }
 
+    /**
+     * Get the item from the string. Using the format of "plugin:item"
+     * @param item The item string to parse
+     * @return The itemstack if found, null if not found
+     */
     @Nullable
-    public static ItemStack getItem(@NotNull String raw) {
-        if (!raw.contains(":")) {
-            Material mat = Material.getMaterial(raw.toUpperCase());
+    public static ItemStack getItem(@NotNull String item) {
+        if (!item.contains(":")) {
+            Material mat = Material.getMaterial(item.toUpperCase());
             if (mat == null) return null;
             return new ItemStack(mat);
         }
         // Ex. Oraxen:BigSword
         // split[0] is the plugin name
         // split[1] is the item name
-        String[] split = raw.split(":", 2);
+        String[] split = item.split(":", 2);
 
         if (!isItemHook(split[0])) return null;
         Hook hook = getHook(split[0]);
@@ -91,7 +105,13 @@ public class Hooks {
         return hook.getItem(split[1]);
     }
 
-    public static String getStringItem(ItemStack itemStack) {
+    /**
+     * Get the string of the item. Do keep in mind that it'll only use hooks that are active. If no plugin responses, it returns the material.
+     * @param itemStack
+     * @return
+     */
+    @NotNull
+    public static String getStringItem(@NotNull ItemStack itemStack) {
         for (Hook hook : hooks.values()) {
             if (hook.isActive() && hook.hasEnabledItemHook()) {
                 String stringyItem = hook.getItemString(itemStack);
@@ -102,7 +122,12 @@ public class Hooks {
         return itemStack.getType().toString();
     }
 
-    public static String getStringEntity(Entity entity) {
+    /**
+     * Get the entity from the string. Using the format of "plugin:entity"
+     * @param entity
+     * @return
+     */
+    public static String getStringEntity(@NotNull Entity entity) {
         for (Hook hook : hooks.values()) {
             if (hook.isActive() && hook.hasEnabledEntityHook()) {
                 String stringyEntity = hook.getEntityString(entity);
@@ -113,7 +138,12 @@ public class Hooks {
         return entity.getType().toString().toUpperCase();
     }
 
-    public static boolean isActiveHook(String id) {
+    /**
+     * Checks if a hook is active. If the hook is not found, it returns false.
+     * @param id the plugin id it'll look for. It's case insensitive.
+     * @return true if the hook is active, false if not (or is not a valid hook).
+     */
+    public static boolean isActiveHook(@NotNull String id) {
         Hook hook = getHook(id);
         if (hook == null) return false;
         return hook.isActive();
