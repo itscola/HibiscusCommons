@@ -316,7 +316,6 @@ public class ItemBuilder {
         ItemStack itemStack = Hooks.getItem(material);
         if (itemStack == null) return null;
         itemStack.setAmount(amount);
-        if (!itemStack.hasItemMeta()) return itemStack;
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return itemStack;
         if (display != null) meta.setDisplayName(StringUtils.parseStringToString(display));
