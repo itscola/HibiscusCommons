@@ -34,7 +34,7 @@ public class ItemBuilder {
     private ArrayList<String> lore = new ArrayList<>();
     private final ArrayList<String> itemFlags = new ArrayList<>();
     private final HashMap<String, Integer> enchantments = new HashMap<>();
-    private final HashMap<String, String> nbtData = new HashMap<>();
+    private final HashMap<NamespacedKey, String> nbtData = new HashMap<>();
     @Getter
     private int amount = 1;
     @Getter
@@ -90,7 +90,7 @@ public class ItemBuilder {
         }
         if (!meta.getPersistentDataContainer().isEmpty()) {
             for (NamespacedKey key : meta.getPersistentDataContainer().getKeys()) {
-                this.nbtData.put(key.getKey(), meta.getPersistentDataContainer().get(key, PersistentDataType.STRING));
+                this.nbtData.put(key, meta.getPersistentDataContainer().get(key, PersistentDataType.STRING));
             }
         }
     }
@@ -363,8 +363,8 @@ public class ItemBuilder {
         }
 
         if (!nbtData.isEmpty()) {
-            for (String key : nbtData.keySet()) {
-                meta.getPersistentDataContainer().set(NamespacedKey.minecraft(key), PersistentDataType.STRING, nbtData.get(key));
+            for (NamespacedKey key : nbtData.keySet()) {
+                meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, nbtData.get(key));
             }
         }
 
