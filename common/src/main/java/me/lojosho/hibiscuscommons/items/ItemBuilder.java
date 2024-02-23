@@ -333,6 +333,12 @@ public class ItemBuilder {
             }
         }
 
+        if (!nbtData.isEmpty()) {
+            for (String key : nbtData.keySet()) {
+                meta.getPersistentDataContainer().set(NamespacedKey.minecraft(key), PersistentDataType.STRING, nbtData.get(key));
+            }
+        }
+
         if (meta instanceof Colorable colorable) {
             if (color != null) colorable.setColor(DyeColor.getByColor(color));
         }
