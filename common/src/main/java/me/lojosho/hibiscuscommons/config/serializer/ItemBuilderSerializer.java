@@ -64,32 +64,32 @@ public class ItemBuilderSerializer implements TypeSerializer<ItemBuilder> {
         if (materialNode.virtual()) return null;
 
         ItemBuilder builder = new ItemBuilder(materialNode.getString("AIR"));
-        if (!amountNode.virtual()) builder.setAmount(amountNode.getInt(1));
-        if (!nameNode.virtual()) builder.setDisplayName(nameNode.getString(""));
-        if (!unbreakableNode.virtual()) builder.setUnbreakable(unbreakableNode.getBoolean());
-        if (!glowingNode.virtual()) builder.setGlowing(glowingNode.getBoolean());
+        if (!amountNode.virtual()) builder.amount(amountNode.getInt(1));
+        if (!nameNode.virtual()) builder.name(nameNode.getString(""));
+        if (!unbreakableNode.virtual()) builder.unbreakable(unbreakableNode.getBoolean());
+        if (!glowingNode.virtual()) builder.glowing(glowingNode.getBoolean());
         if (!loreNode.virtual()) builder.setLoreUsingStrings(new ArrayList<>(loreNode.getList(String.class, new ArrayList<>())));
         if (!appendLoreNode.virtual()) {
             String loreAppendMode = appendLoreNode.getString("").toUpperCase();
-            if (EnumUtils.isValidEnum(LoreAppendMode.class, loreAppendMode)) builder.setLoreAppendMode(LoreAppendMode.valueOf(loreAppendMode));
+            if (EnumUtils.isValidEnum(LoreAppendMode.class, loreAppendMode)) builder.loreAppendMode(LoreAppendMode.valueOf(loreAppendMode));
         }
-        if (!modelDataNode.virtual()) builder.setModelData(modelDataNode.getInt());
+        if (!modelDataNode.virtual()) builder.model(modelDataNode.getInt());
         if (!nbtNode.virtual()) {
             for (ConfigurationNode nbtNodes : nbtNode.childrenMap().values()) {
-                builder.addNBTData(NamespacedKey.minecraft(nbtNodes.key().toString()), nbtNodes.getString());
+                builder.NBTData(NamespacedKey.minecraft(nbtNodes.key().toString()), nbtNodes.getString());
             }
         }
         if (!enchantsNode.virtual()) {
             for (ConfigurationNode enchantNode : enchantsNode.childrenMap().values()) {
                 if (Enchantment.getByKey(NamespacedKey.minecraft(enchantNode.key().toString())) == null) continue;
-                builder.addEnchantment(enchantNode.key().toString(), enchantNode.getInt(1));
+                builder.enchant(enchantNode.key().toString(), enchantNode.getInt(1));
             }
         }
 
         try {
             if (!itemFlagsNode.virtual()) {
                 for (String itemFlag : itemFlagsNode.getList(String.class)) {
-                    builder.addItemFlag(ItemFlag.valueOf(itemFlag));
+                    builder.itemFlag(ItemFlag.valueOf(itemFlag));
                 }
             }
         } catch (Exception e) {
@@ -100,25 +100,25 @@ public class ItemBuilderSerializer implements TypeSerializer<ItemBuilder> {
             String ownerString = ownerNode.getString();
             if (ownerString.contains("%")) {
                 // This means it has PAPI placeholders in it
-                builder.addNBTData(InventoryUtils.getSkullOwner(), ownerString);
+                builder.NBTData(InventoryUtils.getSkullOwner(), ownerString);
             }
-            builder.setSkullOwner(ownerString);
+            builder.skullOwner(ownerString);
         }
 
         if (!textureNode.virtual()) {
             String textureString = textureNode.getString();
             if (textureString.contains("%")) {
                 // This means it has PAPI placeholders in it
-                builder.addNBTData(InventoryUtils.getSkullTexture(), textureString);
+                builder.NBTData(InventoryUtils.getSkullTexture(), textureString);
             }
-            builder.setTexture(textureString);
+            builder.texture(textureString);
         }
 
         if (!colorNode.virtual()) {
             if (!redNode.virtual()) {
-                builder.setColor(Color.fromRGB(redNode.getInt(0), greenNode.getInt(0), blueNode.getInt(0)));
+                builder.color(Color.fromRGB(redNode.getInt(0), greenNode.getInt(0), blueNode.getInt(0)));
             } else {
-                builder.setColor(ServerUtils.hex2Rgb(colorNode.getString("#FFFFFF")));
+                builder.color(ServerUtils.hex2Rgb(colorNode.getString("#FFFFFF")));
             }
         }
 

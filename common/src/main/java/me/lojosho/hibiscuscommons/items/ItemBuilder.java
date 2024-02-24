@@ -1,8 +1,6 @@
 package me.lojosho.hibiscuscommons.items;
 
-import lombok.Getter;
 import me.lojosho.hibiscuscommons.hooks.Hooks;
-import me.lojosho.hibiscuscommons.util.AdventureUtils;
 import me.lojosho.hibiscuscommons.util.InventoryUtils;
 import me.lojosho.hibiscuscommons.util.StringUtils;
 import net.kyori.adventure.text.Component;
@@ -19,7 +17,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.net.URL;
 import java.util.*;
@@ -27,37 +24,27 @@ import java.util.stream.Collectors;
 
 public class ItemBuilder {
 
-    @Getter
     private String material;
-    @Getter
     private String display;
-    @Getter
     private String texture;
-    @Getter
     private String skullOwner;
     private List<String> lore = new ArrayList<>();
     private final ArrayList<String> itemFlags = new ArrayList<>();
     private final HashMap<String, Integer> enchantments = new HashMap<>();
     private final HashMap<NamespacedKey, String> nbtData = new HashMap<>();
-    @Getter
     private int amount = 1;
-    @Getter
     private int model = -1;
-    @Getter
     private LoreAppendMode loreAppendMode;
-    @Getter
     private boolean unbreakable = false;
-    @Getter
     private boolean glowing = false;
-    @Getter
     private Color color;
 
     public ItemBuilder(String material) {
-        setMaterial(material);
+        material(material);
     }
 
     public ItemBuilder(Material material) {
-        setMaterial(material.toString());
+        material(material.toString());
     }
 
     public ItemBuilder(@NotNull ItemStack itemStack) {
@@ -100,57 +87,80 @@ public class ItemBuilder {
      * @param material
      * @return
      */
-    public ItemBuilder setMaterial(@NotNull String material) {
+    public ItemBuilder material(@NotNull String material) {
         this.material = material;
         return this;
     }
 
-    public ItemBuilder setDisplayName(@NotNull String display) {
+    public String material() {
+        return material;
+    }
+
+    public ItemBuilder name(@NotNull String display) {
         this.display = display;
         return this;
     }
 
-    public ItemBuilder setDisplayName(@NotNull Component display) {
+    public String name() {
+        return display;
+    }
+
+    public ItemBuilder name(@NotNull Component display) {
         this.display = MiniMessage.miniMessage().serialize(display);
         return this;
     }
 
-    public ItemBuilder setModelData(int modelData) {
+    public ItemBuilder model(int modelData) {
         this.model = modelData;
         return this;
     }
 
-    public ItemBuilder setAmount(int amount) {
+    public int model() {
+        return model;
+    }
+
+    public ItemBuilder amount(int amount) {
         this.amount = amount;
         return this;
     }
 
-    public ItemBuilder setUnbreakable(boolean unbreakable) {
+    public int amount() {
+        return amount;
+    }
+
+    public ItemBuilder unbreakable(boolean unbreakable) {
         this.unbreakable = unbreakable;
         return this;
     }
 
-    public ItemBuilder setTexture(@NotNull String texture) {
+    public boolean unbreakable() {
+        return unbreakable;
+    }
+
+    public ItemBuilder texture(@NotNull String texture) {
         this.texture = texture;
         return this;
     }
 
-    public ItemBuilder setSkullOwner(@NotNull String username) {
+    public String texture() {
+        return texture;
+    }
+
+    public ItemBuilder skullOwner(@NotNull String username) {
         this.skullOwner = username;
         return this;
     }
 
-    /**
-     * Should try to use #{@link #setLore(List)} instead, as this is just sending strings.
-     * @param lore The lore of the item
-     * @return
-     */
-    public ItemBuilder setLoreUsingStrings(@NotNull List<String> lore) {
+    public String skullOwner() {
+        return skullOwner;
+    }
+
+    public ItemBuilder lore(@NotNull List<String> lore) {
         this.lore = lore;
         return this;
     }
 
-    public ItemBuilder setLore(@NotNull List<Component> lore) {
+    public ItemBuilder loreUsingComponents(@NotNull List<Component> lore) {
         this.lore = lore.stream()
                 .map(component -> MiniMessage.miniMessage().serialize(component))
                 .collect(Collectors.toList());
@@ -162,7 +172,7 @@ public class ItemBuilder {
      * @param flags
      * @return
      */
-    public ItemBuilder addItemFlag(ItemFlag... flags) {
+    public ItemBuilder itemFlag(ItemFlag... flags) {
         for (ItemFlag flag : flags) this.itemFlags.add(flag.toString());
         return this;
     }
@@ -172,9 +182,13 @@ public class ItemBuilder {
      * @param flags
      * @return
      */
-    public ItemBuilder addItemFlag(String... flags) {
+    public ItemBuilder itemFlag(String... flags) {
         this.itemFlags.addAll((Arrays.asList(flags)));
         return this;
+    }
+
+    public List<String> itemFlag() {
+        return List.copyOf(itemFlags);
     }
 
     /**
@@ -183,9 +197,13 @@ public class ItemBuilder {
      * @param mode
      * @return
      */
-    public ItemBuilder setLoreAppendMode(@NotNull LoreAppendMode mode) {
+    public ItemBuilder loreAppendMode(@NotNull LoreAppendMode mode) {
         this.loreAppendMode = mode;
         return this;
+    }
+
+    public LoreAppendMode loreAppendMode() {
+        return loreAppendMode;
     }
 
     /**
@@ -193,7 +211,7 @@ public class ItemBuilder {
      * @param color
      * @return
      */
-    public ItemBuilder setColor(Color color) {
+    public ItemBuilder color(Color color) {
         this.color = color;
         return this;
     }
@@ -205,7 +223,7 @@ public class ItemBuilder {
      * @param blue The blue value
      * @return
      */
-    public ItemBuilder setColor(int red, int green, int blue) {
+    public ItemBuilder color(int red, int green, int blue) {
         this.color = Color.fromRGB(red, green, blue);
         return this;
     }
@@ -215,9 +233,13 @@ public class ItemBuilder {
      * @param color
      * @return
      */
-    public ItemBuilder setColor(DyeColor color) {
+    public ItemBuilder color(DyeColor color) {
         this.color = color.getColor();
         return this;
+    }
+
+    public Color color() {
+        return color;
     }
 
     /**
@@ -225,7 +247,7 @@ public class ItemBuilder {
      * @param enchants
      * @return
      */
-    public ItemBuilder addEnchantment(String... enchants) {
+    public ItemBuilder enchant(String... enchants) {
         for (String enchant : enchants) enchantments.put(enchant, 1);
         return this;
     }
@@ -236,7 +258,7 @@ public class ItemBuilder {
      * @param level
      * @return
      */
-    public ItemBuilder addEnchantment(String enchant, int level) {
+    public ItemBuilder enchant(String enchant, int level) {
         enchantments.put(enchant, level);
         return this;
     }
@@ -247,7 +269,7 @@ public class ItemBuilder {
      * @param level
      * @return
      */
-    public ItemBuilder addEnchantment(Enchantment enchant, int level) {
+    public ItemBuilder enchant(Enchantment enchant, int level) {
         enchantments.put(enchant.getKey().getKey(), level);
         return this;
     }
@@ -257,7 +279,7 @@ public class ItemBuilder {
      * @param glowing
      * @return
      */
-    public ItemBuilder setGlowing(boolean glowing) {
+    public ItemBuilder glowing(boolean glowing) {
         this.glowing = glowing;
         return this;
     }
@@ -268,7 +290,7 @@ public class ItemBuilder {
      * @param value
      * @return
      */
-    public ItemBuilder addNBTData(NamespacedKey key, String value) {
+    public ItemBuilder NBTData(NamespacedKey key, String value) {
         nbtData.put(key, value);
         return this;
     }
@@ -297,7 +319,7 @@ public class ItemBuilder {
      * Returns the lore of the item. Use #setLore to set the lore!
      * @return
      */
-    public List<String> getLore() {
+    public List<String> lore() {
         return List.copyOf(lore);
     }
 
@@ -305,11 +327,11 @@ public class ItemBuilder {
      * Returns all the item flags of the item. Use #addItemFlag to add item flags!
      * @return
      */
-    public List<String> getItemFlags() {
+    public List<String> itemFlags() {
         return List.copyOf(itemFlags);
     }
 
-    public List<NamespacedKey> getNBTDataKeys() {
+    public List<NamespacedKey> NBTData() {
         return List.copyOf(nbtData.keySet());
     }
 
@@ -409,7 +431,7 @@ public class ItemBuilder {
                 }
             }
         }
-        if (itemFlags != null && !itemFlags.isEmpty()) {
+        if (!itemFlags.isEmpty()) {
             for (String flag : itemFlags) {
                 if (!EnumUtils.isValidEnum(ItemFlag.class, flag)) continue;
                 ItemFlag iFlag = ItemFlag.valueOf(flag);
@@ -422,7 +444,7 @@ public class ItemBuilder {
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
 
-        if (enchantments != null && !enchantments.isEmpty()) {
+        if (!enchantments.isEmpty()) {
             for (String enchantment : enchantments.keySet()) {
                 if (Enchantment.getByKey(NamespacedKey.minecraft(enchantment)) == null) continue;
                 meta.addEnchant(Enchantment.getByKey(NamespacedKey.minecraft(enchantment)), enchantments.get(enchantment), true);
