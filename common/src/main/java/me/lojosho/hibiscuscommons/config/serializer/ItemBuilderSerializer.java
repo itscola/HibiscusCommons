@@ -68,7 +68,7 @@ public class ItemBuilderSerializer implements TypeSerializer<ItemBuilder> {
         if (!nameNode.virtual()) builder.setDisplayName(nameNode.getString(""));
         if (!unbreakableNode.virtual()) builder.setUnbreakable(unbreakableNode.getBoolean());
         if (!glowingNode.virtual()) builder.setGlowing(glowingNode.getBoolean());
-        if (!loreNode.virtual()) builder.setLore(new ArrayList<>(loreNode.getList(String.class, new ArrayList<>())));
+        if (!loreNode.virtual()) builder.setLoreUsingStrings(new ArrayList<>(loreNode.getList(String.class, new ArrayList<>())));
         if (!appendLoreNode.virtual()) {
             String loreAppendMode = appendLoreNode.getString("").toUpperCase();
             if (EnumUtils.isValidEnum(LoreAppendMode.class, loreAppendMode)) builder.setLoreAppendMode(LoreAppendMode.valueOf(loreAppendMode));

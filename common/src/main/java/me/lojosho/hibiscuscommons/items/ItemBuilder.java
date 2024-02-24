@@ -2,8 +2,11 @@ package me.lojosho.hibiscuscommons.items;
 
 import lombok.Getter;
 import me.lojosho.hibiscuscommons.hooks.Hooks;
+import me.lojosho.hibiscuscommons.util.AdventureUtils;
 import me.lojosho.hibiscuscommons.util.InventoryUtils;
 import me.lojosho.hibiscuscommons.util.StringUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -20,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ItemBuilder {
 
@@ -106,6 +110,11 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder setDisplayName(@NotNull Component display) {
+        this.display = MiniMessage.miniMessage().serialize(display);
+        return this;
+    }
+
     public ItemBuilder setModelData(int modelData) {
         this.model = modelData;
         return this;
@@ -131,8 +140,20 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder setLore(@Nullable List<String> lore) {
+    /**
+     * Should try to use #{@link #setLore(List)} instead, as this is just sending strings.
+     * @param lore The lore of the item
+     * @return
+     */
+    public ItemBuilder setLoreUsingStrings(@NotNull List<String> lore) {
         this.lore = lore;
+        return this;
+    }
+
+    public ItemBuilder setLore(@NotNull List<Component> lore) {
+        this.lore = lore.stream()
+                .map(component -> MiniMessage.miniMessage().serialize(component))
+                .collect(Collectors.toList());
         return this;
     }
 
