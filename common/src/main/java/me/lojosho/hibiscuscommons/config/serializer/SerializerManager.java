@@ -20,11 +20,11 @@ public class SerializerManager {
         return ItemBuilderSerializer.INSTANCE;
     }
 
-    public static ItemBuilder serializeItemBuilder(ConfigurationNode node) throws SerializationException {
-        return ItemBuilderSerializer.INSTANCE.deserialize(ItemBuilder.class, node);
+    public static ItemBuilder serializeItemBuilder(ConfigurationNode source) throws SerializationException {
+        return ItemBuilderSerializer.INSTANCE.deserialize(ItemBuilder.class, source);
     }
 
-    public static Location serializeLocation(ConfigurationNode node) throws SerializationException {
-        return LocationSerializer.INSTANCE.deserialize(Location.class, node);
+    public static Location serializeLocation(ConfigurationNode source) throws SerializationException {
+        return LocationSerializer.INSTANCE.deserialize(Location.class, source);
     }
 }

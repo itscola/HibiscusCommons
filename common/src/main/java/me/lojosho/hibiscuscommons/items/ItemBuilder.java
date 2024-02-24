@@ -49,15 +49,11 @@ public class ItemBuilder {
     private Color color;
 
     public ItemBuilder(String material) {
-        ItemStack generatedItem = Hooks.getItem(material);
-        if (generatedItem == null) throw new IllegalArgumentException("Item String " + material + " is not valid");
-        new ItemBuilder(generatedItem);
+        setMaterial(material);
     }
 
     public ItemBuilder(Material material) {
-        ItemStack generatedItem = Hooks.getItem(material.toString());
-        if (generatedItem == null) throw new IllegalArgumentException("Item String " + material + " is not valid");
-        new ItemBuilder(generatedItem);
+        setMaterial(material.toString());
     }
 
     public ItemBuilder(@NotNull ItemStack itemStack) {
@@ -74,7 +70,7 @@ public class ItemBuilder {
                 this.texture = skullMeta.getPersistentDataContainer().get(InventoryUtils.getSkullTexture(), PersistentDataType.STRING);
             }
         }
-        if (meta.hasLore()) this.lore = new ArrayList<>(meta.getLore());
+        if (meta.hasLore()) this.lore = new ArrayList<>(Objects.requireNonNullElse(meta.getLore(), new ArrayList<>()));
         if (meta instanceof Colorable colorable) {
             this.color = colorable.getColor().getColor();
         }
@@ -166,7 +162,7 @@ public class ItemBuilder {
      * @param mode
      * @return
      */
-    public ItemBuilder setLoreAppendMode(LoreAppendMode mode) {
+    public ItemBuilder setLoreAppendMode(@NotNull LoreAppendMode mode) {
         this.loreAppendMode = mode;
         return this;
     }
@@ -338,7 +334,7 @@ public class ItemBuilder {
             List<String> lore = new ArrayList<>();
             LoreAppendMode mode = loreAppendMode;
 
-            if (!meta.hasLore() && loreAppendMode != null) mode = LoreAppendMode.IGNORE;
+            if (!meta.hasLore() && loreAppendMode == null) mode = LoreAppendMode.IGNORE;
             switch (mode) {
                 case IGNORE: // DM lore is not added at all
                     lore.addAll(itemLore);
