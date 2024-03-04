@@ -39,19 +39,31 @@ public class ItemBuilder {
     private boolean glowing = false;
     private Color color;
 
-    public ItemBuilder(String material) {
+    public static @NotNull ItemBuilder of(@NotNull String material) {
+        return new ItemBuilder(material);
+    }
+
+    public static @NotNull ItemBuilder of(@NotNull Material material) {
+        return new ItemBuilder(material);
+    }
+
+    public static @NotNull ItemBuilder of(@NotNull ItemStack itemStack) {
+        return new ItemBuilder(itemStack);
+    }
+
+    private ItemBuilder(String material) {
         material(material);
     }
 
-    public ItemBuilder(Material material) {
+    private ItemBuilder(Material material) {
         material(material.toString());
     }
 
-    public ItemBuilder(@NotNull ItemStack itemStack) {
+    private ItemBuilder(@NotNull ItemStack itemStack) {
         this.material = Hooks.getStringItem(itemStack);
         this.amount = itemStack.getAmount();
         ItemMeta meta = itemStack.getItemMeta();
-        if (meta == null) return;
+        if (meta == null) meta = Objects.requireNonNull(Bukkit.getItemFactory().getItemMeta(itemStack.getType()));
         if (meta.hasDisplayName()) this.display = meta.getDisplayName();
         if (meta.hasCustomModelData()) this.model = meta.getCustomModelData();
         if (meta.isUnbreakable()) this.unbreakable = true;
@@ -368,7 +380,7 @@ public class ItemBuilder {
         if (itemStack == null) return null;
         itemStack.setAmount(amount);
         ItemMeta meta = itemStack.getItemMeta();
-        if (meta == null) return itemStack;
+        if (meta == null) meta = Objects.requireNonNull(Bukkit.getItemFactory().getItemMeta(itemStack.getType()));
         if (display != null) meta.setDisplayName(StringUtils.parseStringToString(display));
         if (model >= 0) meta.setCustomModelData(model);
         if (!lore.isEmpty()) {

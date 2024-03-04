@@ -63,7 +63,7 @@ public class ItemBuilderSerializer implements TypeSerializer<ItemBuilder> {
 
         if (materialNode.virtual()) return null;
 
-        ItemBuilder builder = new ItemBuilder(materialNode.getString("AIR"));
+        ItemBuilder builder = ItemBuilder.of(materialNode.getString("AIR"));
         if (!amountNode.virtual()) builder.amount(amountNode.getInt(1));
         if (!nameNode.virtual()) builder.name(nameNode.getString(""));
         if (!unbreakableNode.virtual()) builder.unbreakable(unbreakableNode.getBoolean());
