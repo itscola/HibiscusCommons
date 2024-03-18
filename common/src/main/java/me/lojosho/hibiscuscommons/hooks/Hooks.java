@@ -63,8 +63,7 @@ public class Hooks {
      */
     @NotNull
     public static String processPlaceholders(@NotNull OfflinePlayer player, @NotNull String raw) {
-        if (isActiveHook("PlaceholderAPI")) return PlaceholderAPI.setPlaceholders(player, raw);
-        return raw;
+        return isActiveHook("PlaceholderAPI") ? PlaceholderAPI.setPlaceholders(player, raw) : raw;
     }
 
     /**
