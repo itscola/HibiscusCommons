@@ -37,6 +37,7 @@ public class ItemBuilder {
     private LoreAppendMode loreAppendMode;
     private boolean unbreakable = false;
     private boolean glowing = false;
+    private boolean hasLore = false;
     private Color color;
 
     public static @NotNull ItemBuilder of(@NotNull String material) {
@@ -73,7 +74,10 @@ public class ItemBuilder {
                 this.texture = skullMeta.getPersistentDataContainer().get(InventoryUtils.getSkullTexture(), PersistentDataType.STRING);
             }
         }
-        if (meta.hasLore()) this.lore = new ArrayList<>(Objects.requireNonNullElse(meta.getLore(), new ArrayList<>()));
+        if (meta.hasLore()) {
+            this.lore = new ArrayList<>(Objects.requireNonNullElse(meta.getLore(), new ArrayList<>()));
+            hasLore = true;
+        }
         if (meta instanceof Colorable colorable) {
             this.color = colorable.getColor().getColor();
         }
@@ -169,6 +173,11 @@ public class ItemBuilder {
 
     public ItemBuilder lore(@NotNull List<String> lore) {
         this.lore = lore;
+        return this;
+    }
+
+    public ItemBuilder hasLore(boolean hasLore) {
+        this.hasLore = hasLore;
         return this;
     }
 
@@ -383,33 +392,34 @@ public class ItemBuilder {
         if (meta == null) meta = Objects.requireNonNull(Bukkit.getItemFactory().getItemMeta(itemStack.getType()));
         if (display != null) meta.setDisplayName(StringUtils.parseStringToString(display));
         if (model >= 0) meta.setCustomModelData(model);
-        if (!lore.isEmpty()) {
-            meta.setUnbreakable(unbreakable);
-            List<String> itemLore = Objects.requireNonNullElse(meta.getLore(), new ArrayList<>());
-            List<String> lore = new ArrayList<>();
-            LoreAppendMode mode = loreAppendMode;
+        meta.setUnbreakable(unbreakable);
 
-            if (!meta.hasLore() && loreAppendMode == null) mode = LoreAppendMode.IGNORE;
-            switch (mode) {
-                case IGNORE: // DM lore is not added at all
-                    lore.addAll(itemLore);
-                    break;
-                case TOP: // DM lore is added at the top
-                    lore.addAll(this.lore);
-                    lore.addAll(itemLore);
-                    break;
-                case BOTTOM: // DM lore is bottom at the bottom
-                    lore.addAll(itemLore);
-                    lore.addAll(this.lore);
-                    break;
-                case OVERRIDE: // Lore from DM overrides the lore from the item
-                    lore.addAll(this.lore);
-                    break;
-            }
+        List<String> lore = new ArrayList<>();
+        List<String> itemLore = Objects.requireNonNullElse(meta.getLore(), new ArrayList<>());
 
-            lore.forEach(StringUtils::parseStringToString);
-            meta.setLore(lore);
+        LoreAppendMode mode = loreAppendMode;
+        if (mode == null) mode = LoreAppendMode.OVERRIDE;
+        if (!hasLore && loreAppendMode == null) mode = LoreAppendMode.IGNORE;
+        switch (mode) {
+            case IGNORE: // Additional Lore is not added at all
+                lore.addAll(itemLore);
+                break;
+            case TOP: // Additional lore is added at the top
+                lore.addAll(this.lore);
+                lore.addAll(itemLore);
+                break;
+            case BOTTOM: // Additional lore is bottom at the bottom
+                lore.addAll(itemLore);
+                lore.addAll(this.lore);
+                break;
+            case OVERRIDE: // Additonal Lore overrides the lore from the item
+                lore.addAll(this.lore);
+                break;
         }
+
+        meta.setLore(lore.stream()
+                .map(StringUtils::parseStringToString)
+                .collect(Collectors.toList()));
 
         if (meta instanceof SkullMeta skullMeta) {
             if (skullOwner != null) {
