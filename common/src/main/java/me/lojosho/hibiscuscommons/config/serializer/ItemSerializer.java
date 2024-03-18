@@ -16,7 +16,7 @@ public class ItemSerializer implements TypeSerializer<ItemStack> {
 
     @Override @Deprecated
     public ItemStack deserialize(final Type type, final ConfigurationNode source) throws SerializationException {
-        return SerializerManager.serializeItemBuilder(source).build();
+        return SerializerManager.deserializeItemBuilder(source).build();
     }
     @Override
     public void serialize(final Type type, @Nullable final ItemStack obj, final ConfigurationNode node) throws SerializationException {}
