@@ -24,7 +24,8 @@ allprojects {
         maven("https://oss.sonatype.org/content/groups/public/")
         maven("https://oss.sonatype.org/content/repositories/snapshots")
 
-        
+        // UpdateChecker
+        maven(url = "https://repo.jeff-media.com/public/")
 
         // Geary & Backup ProtocolLib repo
         maven("https://repo.mineinabyss.com/releases/")
@@ -97,6 +98,7 @@ allprojects {
         // Shaded Dependencies
         implementation("org.spongepowered:configurate-yaml:4.2.0-SNAPSHOT")
         implementation("org.bstats:bstats-bukkit:3.0.2")
+        implementation("com.jeff_media:SpigotUpdateChecker:3.0.3")
         implementation("com.github.BG-Software-LLC:CommentedConfiguration:bed3c46369")
     }
 }
